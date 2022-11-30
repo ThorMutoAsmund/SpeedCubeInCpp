@@ -19,6 +19,7 @@ int main()
     uint8_t moves[] = { _F, _R, _D2, _U2, _R, _D2, _R2, _F2, _iL, _U2, _iR, _D2, _iB, _R2, _F, _R2, _iF, _iD, _U2 };
 
     auto start = high_resolution_clock::now();
+    U64 sum = 0ULL;
     for (int i = 0; i < 10000000; ++i)
     {
         NCube c = id;
@@ -26,10 +27,13 @@ int main()
         {
             c.Turn(moves[t]);
         }
+        sum += c.E;
     }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
 
     cout << duration.count()/1000 << "ms" << endl;
+
+    cout << sum << endl;
 }
 

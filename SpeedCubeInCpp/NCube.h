@@ -1,5 +1,8 @@
 #pragma once
 
+#include <iostream>
+using namespace std;
+
 #define U64 unsigned long long
 
 #define _0 -1
@@ -86,23 +89,33 @@
 #define p5DF (pDF * 5)
 #define p5DL (pDL * 5)
 
-
 struct NCube
 {
 private:
-    U64 C;
-    U64 E;
-
     void SwapCorners(int p1, int p2)
     {
-        U64 d = (this->C >> p1 ^ this->C >> p2) & cornerMask;
-        this->C ^= (d << p1) | (d << p2);
+        //U64 d = (this->C >> p1 ^ this->C >> p2) & cornerMask;
+        //this->C ^= (d << p1) | (d << p2);
+
+        U64 d = p1 > p2 ?
+            (this->C ^ this->C << (p1 - p2)) & (cornerMask << p1) :
+            (this->C ^ this->C << (p2 - p1)) & (cornerMask << p2);
+        this->C ^= p1 > p2 ? 
+            (d | (d >> (p1 - p2))) :
+            (d | (d >> (p2 - p1)));
     }
 
     void SwapEdges(int p1, int p2)
     {
-        U64 d = (this->E >> p1 ^ this->E >> p2) & edgeMask;
-        this->E ^= (d << p1) | (d << p2);
+        //U64 d1 = (this->E >> p1 ^ this->E >> p2) & edgeMask;
+        //this->E ^= (d1 << p1) | (d1 << p2);
+
+        U64 d = p1 > p2 ? 
+            (this->E ^ this->E << (p1 - p2)) & (edgeMask << p1) :
+            (this->E ^ this->E << (p2 - p1)) & (edgeMask << p2);
+        this->E ^= p1 > p2 ? 
+            (d | (d >> (p1 - p2))) :
+            (d | (d >> (p2 - p1)));
     }
 
     void OrientEdges(int p1, int p2, int p3, int p4)
@@ -123,6 +136,9 @@ private:
     }
 
 public:
+    U64 C;
+    U64 E;
+
     NCube() : C(0ULL), E(0ULL)
     {
     }
